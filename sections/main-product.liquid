@@ -36,6 +36,9 @@
       {%- if product.vendor != blank -%}<p class="product-vendor">{{ product.vendor }}</p>{%- endif -%}
       <h1>{{ product.title }}</h1>
 
+      {%- comment -%} Visible rating — required for the AggregateRating markup to be eligible. {%- endcomment -%}
+      {% render 'rating', rating_product: product %}
+
       <div class="price product-price">
         {{ product.selected_or_first_available_variant.price | money }}
         {%- if product.compare_at_price > product.price -%}

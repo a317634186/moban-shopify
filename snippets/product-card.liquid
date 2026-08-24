@@ -35,6 +35,8 @@
 
   <h3><a href="{{ p.url }}">{{ p.title }}</a></h3>
 
+  {% render 'rating', rating_product: p %}
+
   <div class="price">
     {{ p.price | money }}
     {%- if p.compare_at_price > p.price -%}

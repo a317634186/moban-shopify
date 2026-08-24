@@ -1,0 +1,34 @@
+{%- comment -%}
+  rating.liquid
+  Accepts: rating_product (product)
+
+  Reads Shopify's standard review metafields, which Shopify Product Reviews,
+  Judge.me, Loox, Okendo and most review apps write to:
+
+    product.metafields.reviews.rating        (type: rating)
+    product.metafields.reviews.rating_count  (type: number_integer)
+
+  Renders NOTHING when there are no reviews. That is deliberate: Google requires
+  AggregateRating markup to correspond to a rating visible on the page, and
+  inventing ratings to farm star snippets is a spam policy violation that gets
+  rich results revoked for the whole domain.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = rating_product
+  assign count = p.metafields.reviews.rating_count.value
+  assign rating = p.metafields.reviews.rating.value
+-%}
+
+{%- if count > 0 and rating.rating != blank -%}
+  {%- assign best = rating.scale_max | default: 5 -%}
+  {%- assign pct = rating.rating | times: 100.0 | divided_by: best -%}
+  <div class="rating" role="img"
+       aria-label="Rated {{ rating.rating }} out of {{ best }} from {{ count }} review{% if count != 1 %}s{% endif %}">
+    <span class="rating-stars" style="--pct: {{ pct }}%"></span>
+    <span class="rating-text">
+      {{ rating.rating }}/{{ best }}
+      <span class="rating-count">({{ count }})</span>
+    </span>
+  </div>
+{%- endif -%}

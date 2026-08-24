@@ -114,6 +114,13 @@
     assign robots_value = 'noindex, follow'
   endif
 
+  # An empty collection is a thin page. Indexing dozens of them drags down the
+  # whole store's quality signals, so keep them crawlable but out of the index
+  # until they have stock.
+  if tname == 'collection' and collection.products_count == 0
+    assign robots_value = 'noindex, follow'
+  endif
+
   # ------------------------------------------------------------ OG IMAGE
   # Dimensions are declared, so the URL is cropped to match them exactly —
   # a mismatch makes social platforms re-crop unpredictably.

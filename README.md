@@ -23,6 +23,20 @@ GitHub → pick this repository and the `main` branch.
 | Newsletter form | The old JS called `preventDefault()` and faked a success message, so no signup was ever recorded. |
 | Cart count | Read from `localStorage` instead of the real cart, showing a made-up number. Now reads `/cart.js`. |
 
+### 3.1.0 — ecommerce SEO gaps closed
+
+| Added | Why it matters |
+| --- | --- |
+| `AggregateRating` + visible star rating (`snippets/rating.liquid`) | Review stars in the search snippet are the largest click-through lever available to an ecommerce store, and the theme had none. Reads Shopify's standard `reviews.rating` / `reviews.rating_count` metafields, which Shopify Product Reviews, Judge.me, Loox and Okendo all write to. Renders **nothing** when there are no reviews — Google requires the rating to be visible, and inventing ratings to farm stars is a spam violation that revokes rich results domain-wide. |
+| `noindex, follow` on empty collections | A store with 25 category collections and stock in 8 of them was publishing 17 thin pages. Index bloat drags down sitewide quality signals. They stay crawlable, so they enter the index by themselves once stocked. |
+| `priceValidUntil` on `Offer` / `AggregateOffer` | Search Console flags its absence as a warning on Product markup. |
+| `isFamilyFriendly: false` on `WebSite` and `Product` | Matches the `rating: adult` and RTA meta tags. Honest classification keeps the store out of family-filtered surfaces rather than being demoted for misrepresenting itself. |
+
+**Deliberately not added: `shippingDetails` and `hasMerchantReturnPolicy`.** These
+surface almost entirely through Google Shopping and free product listings. Adult
+products are a prohibited category there, so the markup would be inert weight on
+every product page. Verify the current policy yourself before planning around it.
+
 ### Found in the 3.0.1 deep review
 
 | Fixed | Problem |
@@ -125,6 +139,37 @@ text in the category hub.
 6. **Add an age gate** if your market requires one. This theme labels the store
    `rating: adult` and carries the RTA meta tag for SafeSearch, but does not include
    an 18+ interstitial.
+7. **Install a review app** (Judge.me, Loox, Okendo or Shopify Product Reviews) and
+   collect real reviews. The star markup is wired and waiting; with zero reviews it
+   correctly renders nothing, so this is the single highest-value thing you can do
+   for click-through rate.
+8. **Write the buying guides.** The theme has a blog template, `BlogPosting` markup
+   and a keyword group for informational queries ("how to choose a vibrator",
+   "water-based vs silicone lube"). Those queries are where an adult store can
+   actually win rankings — product pages compete with Amazon and Lovehoney, but
+   genuinely useful guides do not.
+
+## What a theme cannot do for your rankings
+
+Be clear-eyed about the split. This theme handles the technical layer: crawlability,
+indexing control, structured data, page structure, internal linking and Core Web
+Vitals. That layer is now largely complete, and it is table stakes, not an advantage —
+your competitors have it too.
+
+What still decides whether you rank, none of which lives in a theme:
+
+- **Content depth.** Unique product copy, real category descriptions, buying guides.
+  A collection page with a one-line generic fallback will not outrank one with 400
+  words of genuine buying advice.
+- **Keyword targeting based on real data.** The keyword groups shipped here are
+  informed guesses, not search-volume research. Which terms you can realistically
+  rank for depends on your competition and authority.
+- **Backlinks and brand signals.** The hardest part in this vertical, since many
+  mainstream publishers will not link to adult retail.
+- **Paid channels are largely closed.** Google Shopping and Google Ads both restrict
+  adult products, so organic search, email, and content are where your traffic has
+  to come from. That makes the content layer more important for you than for a
+  typical store, not less.
 
 ## Known limitations
 
