@@ -1,0 +1,11 @@
+[
+  {
+    "name": "Velvet Secret",
+    "settings": [
+      {"type":"image_picker","id":"logo","label":"Logo"},
+      {"type":"text","id":"announcement","label":"Announcement bar","default":"DISCREET SHIPPING · FREE UK DELIVERY OVER £45"},
+      {"type":"color","id":"ink_color","label":"Ink color","default":"#1c1b1b"},
+      {"type":"color","id":"accent_color","label":"Accent color","default":"#f94c43"}
+    ]
+  }
+]
