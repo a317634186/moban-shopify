@@ -10,7 +10,7 @@ GitHub → pick this repository and the `main` branch.
 
 **From ZIP:** Add theme → Upload zip file.
 
-## What changed in 3.0.0, and why
+## What changed in 3.0.x, and why
 
 ### Bugs that were actively suppressing rankings
 
@@ -22,6 +22,24 @@ GitHub → pick this repository and the `main` branch.
 | Homepage title | `page_title \| default: '…'` was dead code: Shopify always populates `page_title`, so the keyword-rich title never rendered. It is now applied only when the merchant has not set their own SEO title. |
 | Newsletter form | The old JS called `preventDefault()` and faked a success message, so no signup was ever recorded. |
 | Cart count | Read from `localStorage` instead of the real cart, showing a made-up number. Now reads `/cart.js`. |
+
+### Found in the 3.0.1 deep review
+
+| Fixed | Problem |
+| --- | --- |
+| `snippets/seo-head.liquid` | `{% if current_tags %}` was a bare truthiness test. In Liquid an **empty array is truthy** — only `nil` and `false` are falsy. If Shopify returns `[]` rather than `nil` on an untagged page, every collection, blog and article page would have been served `noindex`, removing the entire catalogue from Google. Now `current_tags != blank`, which is correct for both shapes. |
+| `sections/header.liquid`, `sections/footer.liquid` | Used `linklists[section.settings.menu]`. A `link_list` setting returns a linklist **object** in current Shopify, and `linklists[object]` silently returns `nil` — the classic "my menu isn't rendering" bug. The top-bar menu and all three footer link columns were rendering empty. Both now resolve object *and* legacy handle. |
+| `sections/hero.liquid` | Hardcoded fallback dimensions of `1600x800` against an asset that is actually `1000x444`, so the declared aspect ratio was wrong and caused the layout shift it was meant to prevent. The mobile `<source>` also had no `width`/`height`, so phones shifted when the 548x800 crop replaced the desktop ratio. |
+| `sections/featured-collections.liquid`, `featured-products.liquid`, `blog-posts.liquid` | Same object-vs-handle bug as the menus, for `collection` and `blog` settings. |
+| `snippets/seo-schema.liquid` | `BlogPosting` dates were formatted in the shop's timezone but suffixed `Z` (UTC), so every article declared the wrong publication instant. Now uses `%z`. |
+| `snippets/seo-head.liquid` | A blank `page_title` would have produced a title beginning with a stray `" \| "`. |
+| `sections/main-product.liquid` | Linked the product type to a `?filter.p.product_type=` URL, generating crawlable parameter duplicates of the collection. Now plain text. |
+| `layout/password.liquid`, `templates/password.liquid` | Added. Development stores are password protected by default, so without this the first theme preview had nowhere to render. |
+
+A gift card template was written and then **deliberately removed**: it depended on
+a `generate_qr_code` filter that could not be verified as real, and shipping
+unverified Liquid to fix a `noindex` page with no SEO value was the wrong trade.
+Shopify falls back to its own gift card rendering.
 
 ### Indexing control
 

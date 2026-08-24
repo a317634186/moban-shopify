@@ -158,8 +158,8 @@
       "@id": {{ shop.url | append: article.url | append: '#article' | json }},
       "headline": {{ article.title | json }},
       "url": {{ shop.url | append: article.url | json }},
-      "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
-      "dateModified": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+      "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%z' | json }},
+      "dateModified": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%z' | json }},
       "description": {{ article.excerpt_or_content | strip_html | truncatewords: 40 | json }},
       {%- if article.image %}"image": {{ article.image | image_url: width: 1200 | prepend: 'https:' | json }},{% endif %}
       "author": { "@type": "Organization", "name": {{ article.author | default: shop.name | json }} },

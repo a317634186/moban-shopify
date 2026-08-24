@@ -25,6 +25,12 @@
     assign seo_title = 'Search adult toys | ' | append: brand
   endif
 
+  # Guard against a blank page_title, which would otherwise produce a title
+  # starting with a stray " | ".
+  if seo_title == blank
+    assign seo_title = brand
+  endif
+
   unless seo_title contains brand
     assign seo_title = seo_title | append: ' | ' | append: brand
   endunless
@@ -96,7 +102,12 @@
   if noindex_list contains tname
     assign robots_value = 'noindex, follow'
   endif
-  if current_tags
+
+  # Must be "!= blank", never a bare truthiness test: in Liquid an empty array
+  # is truthy, so `if current_tags` would noindex every untagged collection,
+  # blog and article page — i.e. the whole catalogue. `blank` matches nil AND
+  # empty arrays, so this is correct whichever shape Shopify returns.
+  if current_tags != blank
     assign robots_value = 'noindex, follow'
   endif
   if request.path contains '/collections/vendors' or request.path contains '/collections/types'

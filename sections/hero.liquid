@@ -7,12 +7,19 @@
 
 <section class="hero" aria-labelledby="HeroHeading">
   <picture>
+    {%- comment -%}
+      width/height on <source> matter as much as on <img>: without them the
+      browser applies the <img> aspect ratio to a differently-shaped mobile crop
+      and the layout shifts once the real file arrives.
+    {%- endcomment -%}
     {%- if section.settings.image_mobile -%}
       <source media="(max-width: 560px)"
               srcset="{{ section.settings.image_mobile | image_url: width: 560 }} 560w, {{ section.settings.image_mobile | image_url: width: 1120 }} 1120w"
-              sizes="100vw">
+              sizes="100vw"
+              width="{{ section.settings.image_mobile.width }}"
+              height="{{ section.settings.image_mobile.height }}">
     {%- else -%}
-      <source media="(max-width: 560px)" srcset="{{ 'hero-mobile.png' | asset_url }}">
+      <source media="(max-width: 560px)" srcset="{{ 'hero-mobile.png' | asset_url }}" width="548" height="800">
     {%- endif -%}
 
     {%- if section.settings.image -%}

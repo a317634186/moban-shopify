@@ -14,10 +14,18 @@
 
     {%- for block in section.blocks -%}
       {%- if block.type == 'menu' -%}
+        {%- comment -%}
+          Resolve a link_list setting whether it yields a linklist object
+          (current Shopify) or a handle string (legacy).
+        {%- endcomment -%}
+        {%- assign fmenu = block.settings.menu -%}
+        {%- if fmenu != blank and fmenu.links == nil -%}
+          {%- assign fmenu = linklists[fmenu] -%}
+        {%- endif -%}
         <div {{ block.shopify_attributes }}>
           <h2 class="footer-heading">{{ block.settings.heading | default: 'Shop' }}</h2>
           <ul>
-            {%- for link in linklists[block.settings.menu].links -%}
+            {%- for link in fmenu.links -%}
               <li><a href="{{ link.url }}">{{ link.title }}</a></li>
             {%- endfor -%}
           </ul>

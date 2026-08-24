@@ -1,7 +1,20 @@
+{%- comment -%}
+  A link_list setting returns a linklist OBJECT on current Shopify versions and a
+  handle string on legacy ones. linklists[object] silently returns nil, which is
+  the classic "my menu isn't rendering" bug — so resolve both shapes.
+{%- endcomment -%}
 {%- liquid
-  assign menu = linklists[section.settings.menu]
+  assign menu = section.settings.menu
+  if menu != blank and menu.links == nil
+    assign menu = linklists[menu]
+  endif
   if menu == blank or menu.links.size == 0
     assign menu = linklists['main-menu']
+  endif
+
+  assign utility = section.settings.utility_menu
+  if utility != blank and utility.links == nil
+    assign utility = linklists[utility]
   endif
 -%}
 
@@ -13,7 +26,7 @@
   <div class="topbar">
     <span>{{ section.settings.topbar_text | default: 'Body-safe adult toys, delivered in plain discreet packaging' }}</span>
     <span class="topbar-links">
-      {%- for link in linklists[section.settings.utility_menu].links limit: 4 -%}
+      {%- for link in utility.links limit: 4 -%}
         <a href="{{ link.url }}">{{ link.title }}</a>
       {%- endfor -%}
     </span>
