@@ -1,0 +1,122 @@
+{%- comment -%}
+  Product page. The commercial landing page for most keyword targets, so it
+  carries the H1 (product title), breadcrumbs, a real description and Product
+  JSON-LD (emitted from snippets/seo-schema.liquid).
+{%- endcomment -%}
+
+{% render 'breadcrumbs' %}
+
+<div class="section product-page">
+  <div class="product-layout">
+    <div class="product-gallery">
+      {%- if product.featured_image -%}
+        <img class="product-hero-image"
+             src="{{ product.featured_image | image_url: width: 900 }}"
+             srcset="{{ product.featured_image | image_url: width: 450 }} 450w, {{ product.featured_image | image_url: width: 900 }} 900w, {{ product.featured_image | image_url: width: 1400 }} 1400w"
+             sizes="(max-width: 900px) 100vw, 560px"
+             width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}"
+             alt="{{ product.featured_image.alt | default: product.title | escape }}"
+             fetchpriority="high" loading="eager" decoding="async">
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+
+      {%- if product.images.size > 1 -%}
+        <div class="thumbs">
+          {%- for image in product.images offset: 1 limit: 7 -%}
+            <img src="{{ image | image_url: width: 200 }}" width="{{ image.width }}" height="{{ image.height }}"
+                 alt="{{ image.alt | default: product.title | escape }} – view {{ forloop.index | plus: 1 }}"
+                 loading="lazy" decoding="async">
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="product-info">
+      {%- if product.vendor != blank -%}<p class="product-vendor">{{ product.vendor }}</p>{%- endif -%}
+      <h1>{{ product.title }}</h1>
+
+      <div class="price product-price">
+        {{ product.selected_or_first_available_variant.price | money }}
+        {%- if product.compare_at_price > product.price -%}
+          <del>{{ product.compare_at_price | money }}</del>
+        {%- endif -%}
+      </div>
+
+      <p class="stock-line">
+        {%- if product.available -%}
+          <span class="in-stock">In stock</span> · dispatched in plain discreet packaging
+        {%- else -%}
+          <span class="out-stock">Currently out of stock</span>
+        {%- endif -%}
+      </p>
+
+      <form method="post" action="{{ routes.cart_add_url }}" class="product-form">
+        {%- if product.variants.size > 1 -%}
+          <label for="VariantSelect">Options</label>
+          <select id="VariantSelect" name="id">
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}"
+                      {% if variant == product.selected_or_first_available_variant %}selected{% endif %}
+                      {% unless variant.available %}disabled{% endunless %}>
+                {{ variant.title }} – {{ variant.price | money }}{% unless variant.available %} (sold out){% endunless %}
+              </option>
+            {%- endfor -%}
+          </select>
+        {%- else -%}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        {%- endif -%}
+
+        <label for="Quantity">Quantity</label>
+        <input id="Quantity" type="number" name="quantity" value="1" min="1" inputmode="numeric">
+
+        <button class="btn add-to-cart" type="submit" {% unless product.available %}disabled{% endunless %}>
+          {% if product.available %}Add to cart{% else %}Sold out{% endif %}
+        </button>
+      </form>
+
+      <div class="product-description rte">
+        {{ product.description }}
+      </div>
+
+      {%- comment -%}
+        Category is plain text on purpose. Linking to ?filter.p.product_type=
+        would generate crawlable parameter URLs that duplicate the collection.
+      {%- endcomment -%}
+      {%- if product.type != blank -%}
+        <div class="product-meta">
+          <p>Category: {{ product.type }}</p>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{%- if product.collections.size > 0 -%}
+  {%- assign rel = product.collections.first -%}
+  {%- if rel.products.size > 1 -%}
+    <section class="section" aria-labelledby="RelatedHeading">
+      <div class="section-head">
+        <h2 id="RelatedHeading">More from {{ rel.title }}</h2>
+      </div>
+      <div class="products">
+        {%- assign shown = 0 -%}
+        {%- for p in rel.products limit: 8 -%}
+          {%- if p.id != product.id and shown < 4 -%}
+            {%- render 'product-card', card_product: p, lazy: true -%}
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <div class="section-cta"><a class="btn" href="{{ rel.url }}">Shop all {{ rel.title | downcase }}</a></div>
+    </section>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [],
+  "blocks": []
+}
+{% endschema %}

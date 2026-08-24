@@ -1,0 +1,60 @@
+{%- comment -%}
+  keyword-index.liquid
+
+  A crawlable topic hub. This is the part of "keyword indexing" that search
+  engines actually use: descriptive internal links with real anchor text, giving
+  every category a short crawl path from the homepage and spreading topical
+  relevance across the store.
+
+  Every entry is checked against the store's real collections first, so the hub
+  never emits links to collections that do not exist (broken internal links cost
+  more than the keyword gains). If too few curated collections exist, it falls
+  back to the store's actual collection list.
+{%- endcomment -%}
+
+{%- liquid
+  assign curated = settings.keyword_hub_handles | default: 'vibrators,wand-massagers,clitoral-stimulators,g-spot-vibrators,rabbit-vibrators,bullet-vibrators,dildos,anal-toys,butt-plugs,prostate-massagers,male-masturbators,cock-rings,couples-toys,remote-control-vibrators,strap-ons,bondage,restraints,lingerie,lubricants,massage-oils,toy-cleaners,for-women,for-men,new-in,sale'
+  assign handles = curated | split: ','
+  assign found = 0
+-%}
+
+<section class="section keyword-hub" aria-labelledby="KeywordHubHeading">
+  <div class="section-head">
+    <h2 id="KeywordHubHeading">{{ settings.keyword_hub_title | default: 'Browse adult toys by category' }}</h2>
+    <p>{{ settings.keyword_hub_intro | default: 'Every category below is body-safe, discreetly packaged and shipped in plain outer wrapping.' }}</p>
+  </div>
+
+  <ul class="keyword-links">
+    {%- for handle in handles -%}
+      {%- assign h = handle | strip -%}
+      {%- assign c = collections[h] -%}
+      {%- if c != empty and c.handle != blank -%}
+        {%- assign found = found | plus: 1 -%}
+        <li>
+          <a href="{{ c.url }}">
+            <span class="kw-title">{{ c.title }}</span>
+            {%- if c.products_count > 0 -%}
+              <span class="kw-count">{{ c.products_count }} product{% if c.products_count != 1 %}s{% endif %}</span>
+            {%- endif -%}
+          </a>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if found < 3 -%}
+      {%- for c in collections limit: 24 -%}
+        {%- unless handles contains c.handle -%}
+          <li>
+            <a href="{{ c.url }}">
+              <span class="kw-title">{{ c.title }}</span>
+              {%- if c.products_count > 0 -%}
+                <span class="kw-count">{{ c.products_count }} product{% if c.products_count != 1 %}s{% endif %}</span>
+              {%- endif -%}
+            </a>
+          </li>
+        {%- endunless -%}
+      {%- endfor -%}
+      <li><a href="{{ routes.all_products_collection_url }}"><span class="kw-title">All adult toys</span></a></li>
+    {%- endif -%}
+  </ul>
+</section>

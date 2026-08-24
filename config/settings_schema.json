@@ -1,13 +1,64 @@
 [
   {
-    "name": "Velvet Secret",
+    "name": "theme_info",
+    "theme_name": "Velvet Secret",
+    "theme_version": "3.0.0",
+    "theme_author": "Velvet Secret",
+    "theme_documentation_url": "https://github.com/a317634186/moban-shopify",
+    "theme_support_url": "https://github.com/a317634186/moban-shopify/issues"
+  },
+  {
+    "name": "Brand",
     "settings": [
-      {"type":"image_picker","id":"logo","label":"Logo"},
-      {"type":"text","id":"announcement","label":"Announcement bar","default":"DISCREET SHIPPING · FREE UK DELIVERY OVER £45"},
-      {"type":"textarea","id":"seo_description","label":"SEO meta description","default":"Shop adult toys, sex toys and intimate wellness at Velvet Secret. Discover vibrators, massage wands, couples toys, lubricants and discreet delivery."},
-      {"type":"text","id":"seo_keywords","label":"SEO keyword index","default":"adult toys, sex toys, intimate wellness, vibrators, massage wands, couples toys, lubricants, discreet shipping, 成人用品, 情趣用品, 成人玩具, 情趣玩具, 情侣用品"},
-      {"type":"color","id":"ink_color","label":"Ink color","default":"#1c1b1b"},
-      {"type":"color","id":"accent_color","label":"Accent color","default":"#f94c43"}
+      { "type": "image_picker", "id": "logo", "label": "Logo" },
+      { "type": "text", "id": "announcement", "label": "Announcement bar",
+        "default": "Discreet packaging on every order — free UK delivery over £45" },
+      { "type": "color", "id": "ink_color", "label": "Ink colour", "default": "#1c1b1b" },
+      { "type": "color", "id": "accent_color", "label": "Accent colour", "default": "#f94c43" },
+      { "type": "select", "id": "text_direction", "label": "Text direction",
+        "options": [ { "value": "ltr", "label": "Left to right" }, { "value": "rtl", "label": "Right to left" } ],
+        "default": "ltr" }
+    ]
+  },
+  {
+    "name": "SEO",
+    "settings": [
+      { "type": "header", "content": "Homepage title and description" },
+      { "type": "paragraph",
+        "content": "Used only when no SEO title is set for the homepage in Online Store settings. Keep the title under about 60 characters and the description under about 155." },
+      { "type": "text", "id": "seo_home_title", "label": "Homepage title suffix",
+        "info": "Rendered as: Store name | this text",
+        "default": "Adult Toys, Vibrators & Sex Toys Online" },
+      { "type": "textarea", "id": "seo_home_description", "label": "Homepage meta description",
+        "default": "Shop adult toys and sex toys at Velvet Secret. Body-safe vibrators, wand massagers, dildos, couples toys, anal toys, male masturbators and water-based lubricants, sent in plain discreet packaging." },
+
+      { "type": "header", "content": "Keyword index" },
+      { "type": "paragraph",
+        "content": "These fill the keywords meta tag. Google ignores that tag for ranking, so treat it as an internal reference list. The keywords that actually rank are the ones in your titles, headings, body copy and internal link text. English only." },
+      { "type": "textarea", "id": "seo_keywords_core", "label": "Core keywords",
+        "default": "adult toys, sex toys, adult sex toys, adult toy store, sex toy shop online, buy sex toys online, intimate wellness, sexual wellness, pleasure products, discreet shipping, discreet packaging, discreet billing" },
+      { "type": "textarea", "id": "seo_keywords_categories", "label": "Category keywords",
+        "default": "vibrators, rabbit vibrator, bullet vibrator, wand massager, magic wand massager, clitoral stimulator, clitoral suction toy, g-spot vibrator, dildos, realistic dildo, suction cup dildo, anal toys, butt plugs, anal beads, prostate massager, male masturbators, strokers, cock rings, penis rings, penis pumps, couples toys, remote control vibrator, app controlled vibrator, wearable vibrator, strap-on, harness, kegel balls, bondage kits, restraints, blindfolds, sexy lingerie, water-based lubricant, silicone lubricant, massage oil, arousal gel, sex toy cleaner" },
+      { "type": "textarea", "id": "seo_keywords_guides", "label": "Guide and blog keywords",
+        "default": "how to choose a vibrator, beginner sex toys, best first vibrator, sex toy materials guide, body-safe silicone toys, how to clean sex toys, how to store sex toys, water-based vs silicone lube, couples intimacy tips, introducing toys to a relationship" },
+
+      { "type": "header", "content": "Structured data" },
+      { "type": "textarea", "id": "social_links", "label": "Social profile URLs",
+        "info": "Comma separated. Added to the Organization schema as sameAs, which helps Google connect your brand to its social profiles.",
+        "placeholder": "https://www.instagram.com/yourbrand, https://x.com/yourbrand" }
+    ]
+  },
+  {
+    "name": "Category hub",
+    "settings": [
+      { "type": "paragraph",
+        "content": "A crawlable list of category links shown on the homepage, collection pages, search and 404. Only collections that actually exist are rendered, so the hub never creates broken links." },
+      { "type": "text", "id": "keyword_hub_title", "label": "Heading", "default": "Browse adult toys by category" },
+      { "type": "textarea", "id": "keyword_hub_intro", "label": "Intro line",
+        "default": "Every category below is body-safe, discreetly packaged and shipped in plain outer wrapping." },
+      { "type": "textarea", "id": "keyword_hub_handles", "label": "Collection handles",
+        "info": "Comma separated collection handles, in the order you want them listed.",
+        "default": "vibrators,wand-massagers,clitoral-stimulators,g-spot-vibrators,rabbit-vibrators,bullet-vibrators,dildos,anal-toys,butt-plugs,prostate-massagers,male-masturbators,cock-rings,couples-toys,remote-control-vibrators,strap-ons,bondage,restraints,lingerie,lubricants,massage-oils,toy-cleaners,for-women,for-men,new-in,sale" }
     ]
   }
 ]

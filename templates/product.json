@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": { "type": "main-product", "settings": {} },
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "t1": { "type": "item", "settings": { "title": "Body-safe materials", "text": "Medical-grade silicone and ABS only" } },
+        "t2": { "type": "item", "settings": { "title": "Discreet packaging", "text": "Plain outer box, neutral billing" } },
+        "t3": { "type": "item", "settings": { "title": "Fast tracked delivery", "text": "Dispatched same working day" } }
+      },
+      "block_order": ["t1", "t2", "t3"],
+      "settings": {}
+    }
+  },
+  "order": ["main", "trust"]
+}

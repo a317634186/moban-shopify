@@ -1,0 +1,32 @@
+{%- comment -%}
+  robots.txt
+
+  Starts from Shopify's default rules (which already block /cart, /checkout,
+  /account and the ?sort_by= duplicate URLs) and adds a few extras:
+
+  - /search  : internal search result pages have no unique value to index
+  - ?q= / ?view= : parameter variants of real pages
+  - /apps/   : app proxy pages that are not part of the storefront
+
+  Faceted filter URLs (?filter.*) are deliberately left crawlable — they are
+  marked noindex,follow in snippets/seo-head.liquid instead, which lets Google
+  follow the links to products without indexing the filtered duplicates.
+{%- endcomment -%}
+{% for group in robots.default_groups %}
+  {{- group.user_agent }}
+
+  {%- for rule in group.rules %}
+    {{ rule }}
+  {%- endfor %}
+
+  {%- if group.user_agent.value == '*' %}
+    {{ 'Disallow: /search' }}
+    {{ 'Disallow: /*?q=' }}
+    {{ 'Disallow: /*?view=' }}
+    {{ 'Disallow: /apps/' }}
+  {%- endif %}
+
+  {%- if group.sitemap != blank %}
+    {{ group.sitemap }}
+  {%- endif %}
+{% endfor %}

@@ -1,21 +1,151 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "main-index",
-      "name": "Velvet Secret",
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "NEW IN",
+        "heading": "Adult Toys & Intimate Wellness",
+        "subheading": "Body-safe vibrators, couples toys and lubricants — shipped in plain discreet packaging.",
+        "image_alt": "Adult toys and intimate wellness products from Velvet Secret",
+        "button_label": "Shop all adult toys"
+      }
+    },
+    "categories": {
+      "type": "featured-collections",
+      "blocks": {
+        "b1": { "type": "category", "settings": { "heading": "Vibrators", "text": "Bullet, rabbit, wand and G-spot vibrators." } },
+        "b2": { "type": "category", "settings": { "heading": "Couples toys", "text": "Remote and app-controlled play for two." } },
+        "b3": { "type": "category", "settings": { "heading": "Lubricants", "text": "Water-based and silicone, body-safe." } }
+      },
+      "block_order": ["b1", "b2", "b3"],
+      "settings": {
+        "heading": "Shop adult toys by category",
+        "subheading": "Start with what feels right for you."
+      }
+    },
+    "featured": {
+      "type": "featured-products",
+      "settings": {
+        "heading": "Best selling adult toys",
+        "subheading": "Body-safe favourites, discreetly packaged.",
+        "count": 6
+      }
+    },
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "t1": { "type": "item", "settings": { "title": "Body-safe materials", "text": "Medical-grade silicone and ABS only" } },
+        "t2": { "type": "item", "settings": { "title": "Discreet packaging", "text": "Plain outer box, neutral billing" } },
+        "t3": { "type": "item", "settings": { "title": "Expert buying guides", "text": "Honest advice, no pressure" } },
+        "t4": { "type": "item", "settings": { "title": "Fast tracked delivery", "text": "Dispatched same working day" } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4"],
       "settings": {}
+    },
+    "hub": {
+      "type": "keyword-hub",
+      "settings": {}
+    },
+    "editorial": {
+      "type": "rich-text",
+      "blocks": {
+        "p1": {
+          "type": "panel",
+          "settings": {
+            "heading": "A full range of adult toys for every body",
+            "text": "<p>Our range covers external and internal stimulation: bullet and rabbit vibrators, broad wand massagers, clitoral suction toys, G-spot and prostate massagers, dildos, anal toys and butt plugs, male masturbators and cock rings. Filter by material, power source and noise level to find something that suits how you actually like to play.</p>",
+            "button_label": "Browse all adult toys"
+          }
+        },
+        "p2": {
+          "type": "panel",
+          "settings": {
+            "heading": "Buying guides written by people who test the toys",
+            "text": "<p>Not sure where to start? Our guides explain the difference between rumbly and buzzy motors, which lubricant works with which material, how to clean silicone properly, and how couples can introduce a remote-control toy without any awkwardness.</p>",
+            "button_label": "Read the buying guides"
+          }
+        }
+      },
+      "block_order": ["p1", "p2"],
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "qa",
+          "settings": {
+            "question": "Do you ship adult toys in discreet packaging?",
+            "answer": "<p>Yes. Every order ships in a plain outer box or bag with no branding, no product images and no mention of adult toys on the label. Your bank statement shows a neutral trading name, so billing is discreet too.</p>"
+          }
+        },
+        "q2": {
+          "type": "qa",
+          "settings": {
+            "question": "Which sex toy materials are body-safe?",
+            "answer": "<p>Look for non-porous materials: medical-grade silicone, ABS plastic, borosilicate glass and stainless steel. These can be cleaned properly and do not absorb bacteria. Avoid jelly, PVC and anything containing phthalates. Every toy we list states its material on the product page.</p>"
+          }
+        },
+        "q3": {
+          "type": "qa",
+          "settings": {
+            "question": "What is a good first vibrator for a beginner?",
+            "answer": "<p>Most beginners get on best with a small bullet vibrator or a broad, rumbly wand massager. Both are external, easy to control and useful solo or with a partner. Start on the lowest setting and use a water-based lubricant.</p>"
+          }
+        },
+        "q4": {
+          "type": "qa",
+          "settings": {
+            "question": "Which lubricant should I use with a silicone toy?",
+            "answer": "<p>Use a water-based lubricant. Silicone lubricant can degrade the surface of silicone toys over time. Water-based lube is also condom-safe and rinses off easily.</p>"
+          }
+        },
+        "q5": {
+          "type": "qa",
+          "settings": {
+            "question": "How do I clean and store adult toys?",
+            "answer": "<p>Wash non-porous toys with warm water and a mild unscented soap or a dedicated toy cleaner after every use, then air dry fully. Store toys separately in a pouch so different silicones do not react with each other, and remove batteries from anything you are storing long term.</p>"
+          }
+        },
+        "q6": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I return an adult toy?",
+            "answer": "<p>For hygiene reasons, intimate products can only be returned unused and in sealed original packaging. Faulty items are covered by the manufacturer warranty — contact us and we will arrange a replacement.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5", "q6"],
+      "settings": {
+        "heading": "Adult toy buying questions, answered",
+        "subheading": "Straight answers on materials, discretion and delivery."
+      }
+    },
+    "journal": {
+      "type": "blog-posts",
+      "settings": {
+        "heading": "Adult toy guides and intimacy advice",
+        "subheading": "Practical, inclusive advice — no jargon.",
+        "count": 3
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Private access to new arrivals",
+        "subheading": "Buying guides, restock alerts and subscriber-only offers. Unsubscribe any time."
+      }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "categories",
+    "featured",
+    "trust",
+    "hub",
+    "editorial",
+    "faq",
+    "journal",
+    "newsletter"
   ]
 }

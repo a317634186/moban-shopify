@@ -1,0 +1,41 @@
+{% render 'breadcrumbs' %}
+
+<article class="section article-page">
+  <header class="article-head">
+    <h1>{{ article.title }}</h1>
+    <p class="article-byline">
+      <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%-d %B %Y' }}</time>
+      {%- if article.author != blank %} · {{ article.author }}{% endif -%}
+    </p>
+  </header>
+
+  {%- if article.image -%}
+    <img class="article-hero"
+         src="{{ article.image | image_url: width: 1200 }}"
+         srcset="{{ article.image | image_url: width: 600 }} 600w, {{ article.image | image_url: width: 1200 }} 1200w"
+         sizes="(max-width: 900px) 100vw, 820px"
+         width="{{ article.image.width }}" height="{{ article.image.height }}"
+         alt="{{ article.image.alt | default: article.title | escape }}"
+         fetchpriority="high" loading="eager" decoding="async">
+  {%- endif -%}
+
+  <div class="rte article-body">{{ article.content }}</div>
+
+  {%- if article.tags.size > 0 -%}
+    <p class="article-tags">
+      Topics:
+      {%- for tag in article.tags -%}
+        <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}
+      {%- endfor -%}
+    </p>
+  {%- endif -%}
+
+  <p class="article-back"><a href="{{ blog.url }}">All {{ blog.title | downcase }} articles</a></p>
+</article>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,165 @@
+{%- comment -%}
+  seo-head.liquid
+  Centralised, per-template SEO head: title, description, English keyword index,
+  robots directives, canonical, pagination-aware titles, hreflang, Open Graph,
+  Twitter cards and adult-content labelling.
+{%- endcomment -%}
+
+{%- liquid
+  assign tname = template.name | default: 'index'
+  assign brand = shop.name
+
+  # ---------------------------------------------------------------- TITLE
+  assign seo_title = page_title
+
+  if tname == 'index' and page_title == brand
+    assign home_tail = settings.seo_home_title | default: 'Adult Toys, Vibrators & Sex Toys Online'
+    assign seo_title = brand | append: ' | ' | append: home_tail
+  endif
+
+  if tname == 'collection' and collection.title != blank and page_title == collection.title
+    assign seo_title = collection.title | append: ' | Buy Adult Toys Online | ' | append: brand
+  endif
+
+  if tname == 'search'
+    assign seo_title = 'Search adult toys | ' | append: brand
+  endif
+
+  unless seo_title contains brand
+    assign seo_title = seo_title | append: ' | ' | append: brand
+  endunless
+
+  if current_page > 1
+    assign seo_title = seo_title | append: ' – Page ' | append: current_page
+  endif
+
+  # ---------------------------------------------------------- DESCRIPTION
+  assign seo_description = page_description
+
+  if seo_description == blank
+    case tname
+      when 'index'
+        assign seo_description = settings.seo_home_description | default: 'Shop adult toys and sex toys at Velvet Secret. Body-safe vibrators, wand massagers, dildos, couples toys, anal toys, male masturbators and water-based lubricants, sent in plain discreet packaging.'
+      when 'product'
+        assign seo_description = product.description | strip_html | truncatewords: 32
+      when 'collection'
+        assign seo_description = collection.description | strip_html | truncatewords: 32
+      when 'article'
+        assign seo_description = article.excerpt_or_content | strip_html | truncatewords: 32
+      when 'page'
+        assign seo_description = page.content | strip_html | truncatewords: 32
+      when 'blog'
+        assign seo_description = 'Guides and honest advice on choosing adult toys, body-safe materials, cleaning and care, and intimate wellness for solo play and couples.'
+    endcase
+  endif
+
+  if seo_description == blank and tname == 'collection'
+    assign seo_description = 'Shop ' | append: collection.title | append: ' at ' | append: brand | append: '. Body-safe adult toys and intimate wellness essentials with discreet packaging and discreet billing.'
+  endif
+
+  if seo_description == blank and tname == 'product'
+    assign seo_description = 'Buy ' | append: product.title | append: ' at ' | append: brand | append: '. Body-safe adult toy with discreet packaging, discreet billing and fast delivery.'
+  endif
+
+  if seo_description == blank
+    assign seo_description = settings.seo_home_description | default: 'Adult toys, sex toys and intimate wellness products with body-safe materials and discreet packaging.'
+  endif
+
+  # ------------------------------------------------- ENGLISH KEYWORD INDEX
+  assign kw_core = settings.seo_keywords_core | default: 'adult toys, sex toys, adult sex toys, adult toy store, sex toy shop online, intimate wellness, sexual wellness, pleasure products, discreet shipping, discreet packaging'
+  assign seo_keywords = kw_core
+
+  case tname
+    when 'product'
+      assign kw_tags = product.tags | join: ', '
+      assign seo_keywords = product.title | append: ', ' | append: product.type | append: ', buy ' | append: product.title | append: ' online, ' | append: kw_tags | append: ', ' | append: kw_core
+    when 'collection'
+      assign kw_tags = collection.all_tags | join: ', '
+      assign seo_keywords = collection.title | append: ', ' | append: collection.title | append: ' online, buy ' | append: collection.title | append: ', ' | append: kw_tags | append: ', ' | append: kw_core
+    when 'article'
+      assign kw_tags = article.tags | join: ', '
+      assign seo_keywords = article.title | append: ', ' | append: kw_tags | append: ', ' | append: settings.seo_keywords_guides | default: 'how to choose a vibrator, beginner sex toys, sex toy materials guide, how to clean sex toys, couples intimacy tips'
+    when 'blog'
+      assign seo_keywords = settings.seo_keywords_guides | default: 'how to choose a vibrator, beginner sex toys, sex toy materials guide, how to clean sex toys, couples intimacy tips'
+      assign seo_keywords = seo_keywords | append: ', ' | append: kw_core
+    when 'index'
+      assign kw_cats = settings.seo_keywords_categories | default: 'vibrators, rabbit vibrator, bullet vibrator, wand massager, clitoral stimulator, g-spot vibrator, dildos, anal toys, butt plugs, prostate massager, male masturbators, strokers, cock rings, couples toys, remote control vibrator, app controlled vibrator, strap-on, bondage kits, restraints, sexy lingerie, water-based lubricant, silicone lubricant, massage oil'
+      assign seo_keywords = kw_core | append: ', ' | append: kw_cats
+  endcase
+
+  assign seo_keywords = seo_keywords | replace: ', ,', ',' | replace: ',,', ','
+
+  # --------------------------------------------------------------- ROBOTS
+  assign robots_value = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+  assign noindex_list = 'search,cart,404,gift_card,password,customers/account,customers/login,customers/register,customers/order,customers/addresses,customers/reset_password,customers/activate_account'
+
+  if noindex_list contains tname
+    assign robots_value = 'noindex, follow'
+  endif
+  if current_tags
+    assign robots_value = 'noindex, follow'
+  endif
+  if request.path contains '/collections/vendors' or request.path contains '/collections/types'
+    assign robots_value = 'noindex, follow'
+  endif
+
+  # ------------------------------------------------------------ OG IMAGE
+  # Dimensions are declared, so the URL is cropped to match them exactly —
+  # a mismatch makes social platforms re-crop unpredictably.
+  if page_image
+    assign og_image = page_image | image_url: width: 1200, height: 628, crop: 'center'
+    assign og_w = 1200
+    assign og_h = 628
+  else
+    assign og_image = 'hero-desktop.png' | asset_url
+    assign og_w = 1000
+    assign og_h = 444
+  endif
+
+  # ----------------------------------------------------------- HREFLANG
+  assign locale_root = request.locale.root_url
+  assign locale_path = request.path
+  unless locale_root == '/'
+    assign locale_path = locale_path | remove_first: locale_root
+  endunless
+-%}
+
+<title>{{ seo_title | escape }}</title>
+<meta name="description" content="{{ seo_description | strip_newlines | escape }}">
+<meta name="keywords" content="{{ seo_keywords | strip_newlines | escape }}">
+<meta name="robots" content="{{ robots_value }}">
+<link rel="canonical" href="{{ canonical_url }}">
+
+{%- comment -%} Adult content labelling so SafeSearch and family filters classify the store correctly {%- endcomment -%}
+<meta name="rating" content="adult">
+<meta name="RATING" content="RTA-5042-1996-1400-1577-RTA">
+
+{%- if shop.published_locales.size > 1 -%}
+  {%- for locale in shop.published_locales -%}
+    <link rel="alternate" hreflang="{{ locale.iso_code }}" href="{{ request.origin }}{% unless locale.root_url == '/' %}{{ locale.root_url }}{% endunless %}{{ locale_path }}">
+  {%- endfor -%}
+  <link rel="alternate" hreflang="x-default" href="{{ request.origin }}{{ locale_path }}">
+{%- endif -%}
+
+<meta property="og:type" content="{% if tname == 'product' %}product{% elsif tname == 'article' %}article{% else %}website{% endif %}">
+<meta property="og:site_name" content="{{ shop.name | escape }}">
+<meta property="og:locale" content="{{ request.locale.iso_code | replace: '-', '_' }}">
+<meta property="og:title" content="{{ seo_title | escape }}">
+<meta property="og:description" content="{{ seo_description | strip_newlines | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:image" content="https:{{ og_image }}">
+<meta property="og:image:width" content="{{ og_w }}">
+<meta property="og:image:height" content="{{ og_h }}">
+<meta property="og:image:alt" content="{{ seo_title | escape }}">
+
+{%- if tname == 'product' -%}
+  <meta property="product:brand" content="{{ product.vendor | default: shop.name | escape }}">
+  <meta property="product:price:amount" content="{{ product.selected_or_first_available_variant.price | divided_by: 100.0 }}">
+  <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+  <meta property="product:availability" content="{% if product.available %}in stock{% else %}out of stock{% endif %}">
+{%- endif -%}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ seo_title | escape }}">
+<meta name="twitter:description" content="{{ seo_description | strip_newlines | escape }}">
+<meta name="twitter:image" content="https:{{ og_image }}">

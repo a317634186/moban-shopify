@@ -1,0 +1,31 @@
+{% render 'breadcrumbs' %}
+
+<div class="section">
+  <header class="collection-head">
+    <h1>{{ page_title | default: 'Shop all adult toy categories' }}</h1>
+    <p class="collection-description">
+      Every category in the {{ shop.name }} range, from vibrators and wand massagers
+      to couples toys, anal toys, male masturbators and body-safe lubricants.
+    </p>
+  </header>
+
+  <ul class="keyword-links">
+    {%- for c in collections -%}
+      <li>
+        <a href="{{ c.url }}">
+          <span class="kw-title">{{ c.title }}</span>
+          {%- if c.products_count > 0 -%}
+            <span class="kw-count">{{ c.products_count }} product{% if c.products_count != 1 %}s{% endif %}</span>
+          {%- endif -%}
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "settings": []
+}
+{% endschema %}

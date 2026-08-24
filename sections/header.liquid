@@ -1,0 +1,67 @@
+{%- liquid
+  assign menu = linklists[section.settings.menu]
+  if menu == blank or menu.links.size == 0
+    assign menu = linklists['main-menu']
+  endif
+-%}
+
+{%- if settings.announcement != blank -%}
+  <div class="announcement">{{ settings.announcement }}</div>
+{%- endif -%}
+
+<header class="header">
+  <div class="topbar">
+    <span>{{ section.settings.topbar_text | default: 'Body-safe adult toys, delivered in plain discreet packaging' }}</span>
+    <span class="topbar-links">
+      {%- for link in linklists[section.settings.utility_menu].links limit: 4 -%}
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      {%- endfor -%}
+    </span>
+  </div>
+
+  <div class="header-main">
+    <button class="menu-toggle" type="button" data-menu aria-expanded="false" aria-controls="MainNav" aria-label="Open menu">
+      <span aria-hidden="true">&#9776;</span>
+    </button>
+
+    <a class="brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home">
+      {%- if settings.logo -%}
+        <img src="{{ settings.logo | image_url: width: 120 }}"
+             srcset="{{ settings.logo | image_url: width: 60 }} 60w, {{ settings.logo | image_url: width: 120 }} 120w"
+             width="{{ settings.logo.width }}" height="{{ settings.logo.height }}"
+             alt="{{ shop.name | escape }} – adult toys and intimate wellness" fetchpriority="high" decoding="async">
+      {%- else -%}
+        <img src="{{ 'logo.png' | asset_url }}" width="280" height="98"
+             alt="{{ shop.name | escape }} – adult toys and intimate wellness" fetchpriority="high" decoding="async">
+      {%- endif -%}
+      <span class="brand-name">{{ shop.name }}</span>
+    </a>
+
+    <nav class="nav" id="MainNav" aria-label="Main navigation">
+      {%- for link in menu.links -%}
+        <a href="{{ link.url }}"{% if link.active %} class="active" aria-current="page"{% endif %}>{{ link.title }}</a>
+      {%- endfor -%}
+    </nav>
+
+    <div class="actions">
+      <a class="icon-btn" href="{{ routes.search_url }}" aria-label="Search adult toys">
+        <span aria-hidden="true">&#9906;</span>
+      </a>
+      <a class="icon-btn" href="{{ routes.cart_url }}" aria-label="Cart">
+        <span aria-hidden="true">&#128722;</span>
+        <span class="cart-count" data-cart-count>{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Main menu", "default": "main-menu" },
+    { "type": "link_list", "id": "utility_menu", "label": "Top bar menu" },
+    { "type": "text", "id": "topbar_text", "label": "Top bar text", "default": "Body-safe adult toys, delivered in plain discreet packaging" }
+  ]
+}
+{% endschema %}

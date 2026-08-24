@@ -1,0 +1,17 @@
+<div class="section notfound">
+  <h1>Page not found</h1>
+  <p>That link no longer exists. These are the most useful places to go next:</p>
+  <p>
+    <a class="btn" href="{{ routes.all_products_collection_url }}">Shop all adult toys</a>
+    <a class="btn" href="{{ routes.search_url }}">Search the store</a>
+  </p>
+</div>
+
+{% render 'keyword-index' %}
+
+{% schema %}
+{
+  "name": "404",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,49 @@
+<div class="section search-page">
+  <h1>Search {{ shop.name }}</h1>
+
+  <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+    <label class="visually-hidden" for="SearchInput">Search adult toys</label>
+    <input id="SearchInput" type="search" name="q" value="{{ search.terms | escape }}"
+           placeholder="Try &ldquo;wand massager&rdquo; or &ldquo;water-based lube&rdquo;">
+    <input type="hidden" name="type" value="product,article,page">
+    <button class="btn" type="submit">Search</button>
+  </form>
+
+  {%- if search.performed -%}
+    <p class="search-count">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for &ldquo;{{ search.terms | escape }}&rdquo;</p>
+
+    {%- if search.results_count > 0 -%}
+      {%- paginate search.results by 24 -%}
+        <div class="products">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {%- render 'product-card', card_product: item, lazy: true -%}
+            {%- else -%}
+              <article class="card card-text">
+                <h2><a href="{{ item.url }}">{{ item.title }}</a></h2>
+                <p>{{ item.content | strip_html | truncatewords: 20 }}</p>
+              </article>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" aria-label="Pagination">{{ paginate | default_pagination }}</nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      <p class="empty-note">
+        Nothing matched that search.
+        <a href="{{ routes.all_products_collection_url }}">Browse all adult toys</a> instead.
+      </p>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% render 'keyword-index' %}
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": []
+}
+{% endschema %}

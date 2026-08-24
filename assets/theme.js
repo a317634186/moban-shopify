@@ -1,18 +1,87 @@
-const cartKey='pleasure-noir-cart';
-const brandStyle=document.createElement('style');brandStyle.textContent='.brand img{width:34px;height:34px;object-fit:contain}.brand-name{font:600 16px Montserrat,sans-serif;letter-spacing:.08em;margin-left:9px;white-space:nowrap}.footer-brand{display:flex;align-items:center;margin-bottom:12px}.footer-brand img{width:34px;height:34px;object-fit:contain}';document.head.appendChild(brandStyle);
-document.title='Velvet Secret — Pleasure for Every Body';
-document.querySelectorAll('.brand img,.footer img').forEach(image=>image.alt='Velvet Secret');
-const footerCopy=document.querySelector('.copyright');
-if(footerCopy) footerCopy.textContent='© 2026 Velvet Secret · Pleasure for every body';
-const brandLink=document.querySelector('.brand');
-if(brandLink&&!brandLink.querySelector('.brand-name')){const name=document.createElement('span');name.className='brand-name';name.textContent='Velvet Secret';brandLink.appendChild(name)}
-const footerLogo=document.querySelector('.footer-inner>div:first-child');
-if(footerLogo&&!footerLogo.querySelector('.footer-brand')){const image=footerLogo.querySelector('img');if(image){const wrap=document.createElement('div');wrap.className='footer-brand';image.replaceWith(wrap);wrap.appendChild(image);const name=document.createElement('span');name.className='brand-name';name.textContent='Velvet Secret';wrap.appendChild(name)}}
-const cartCount=document.querySelector('[data-cart-count]');
-let cart=Number(localStorage.getItem(cartKey)||0);
-function renderCart(){if(cartCount)cartCount.textContent=cart}
-renderCart();
-document.querySelector('[data-menu]')?.addEventListener('click',()=>document.querySelector('.nav')?.classList.toggle('open'));
-document.querySelectorAll('.quick-add').forEach(button=>button.addEventListener('click',()=>{cart++;localStorage.setItem(cartKey,cart);renderCart();const old=button.textContent;button.textContent='Added to cart ✓';setTimeout(()=>button.textContent=old,1300)}));
-document.querySelectorAll('[data-tabs] .tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('[data-tabs] .tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active')}));
-document.querySelector('.signup')?.addEventListener('submit',event=>{event.preventDefault();const button=event.currentTarget.querySelector('button');button.textContent='Thank you ✓';event.currentTarget.querySelector('input').value=''});
+/*
+  Velvet Secret — theme.js
+
+  Progressive enhancement only. Deliberately does NOT touch document.title,
+  meta tags or image alt attributes. The previous version overwrote the title on
+  every page, so a rendering crawler saw one identical title across the whole
+  store. Titles and alt text are rendered server side in Liquid and left alone.
+*/
+(function () {
+  'use strict';
+
+  /* ----------------------------------------------------------- mobile menu */
+  var toggle = document.querySelector('[data-menu]');
+  var nav = document.getElementById('MainNav');
+
+  if (toggle && nav) {
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+  }
+
+  /* ------------------------------------------- real cart count from Shopify */
+  function paintCartCount(count) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-cart-count]'), function (node) {
+      node.textContent = count;
+      node.hidden = count === 0;
+    });
+  }
+
+  function cartUrl(path) {
+    var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+    return root.replace(/\/$/, '') + path;
+  }
+
+  function refreshCart() {
+    return fetch(cartUrl('/cart.js'), { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (cart) { if (cart) paintCartCount(cart.item_count); });
+  }
+
+  /* --------------------------------------- add to cart without a page reload */
+  Array.prototype.forEach.call(document.querySelectorAll('form[action*="/cart/add"]'), function (form) {
+    form.addEventListener('submit', function (event) {
+      var button = form.querySelector('[type="submit"]');
+      if (!button || !window.fetch) return; /* no JS path: normal form post */
+
+      event.preventDefault();
+      var original = button.innerHTML;
+      button.disabled = true;
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' }
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error('add-to-cart failed');
+          button.innerHTML = '<span>Added to cart</span>';
+          return refreshCart();
+        })
+        .then(function () {
+          window.setTimeout(function () {
+            button.innerHTML = original;
+            button.disabled = false;
+          }, 1400);
+        })
+        .catch(function () {
+          button.disabled = false;
+          form.submit();
+        });
+    });
+  });
+
+  /* --------------------------------------------- product variant deep-links */
+  var variantSelect = document.getElementById('VariantSelect');
+  if (variantSelect && window.history && window.history.replaceState) {
+    variantSelect.addEventListener('change', function () {
+      try {
+        var url = new URL(window.location.href);
+        url.searchParams.set('variant', variantSelect.value);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) { /* older browsers: the form still posts the right variant */ }
+    });
+  }
+})();

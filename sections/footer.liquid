@@ -1,0 +1,70 @@
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        {%- if settings.logo -%}
+          <img src="{{ settings.logo | image_url: width: 68 }}" width="34" height="34" alt="{{ shop.name | escape }}" loading="lazy" decoding="async">
+        {%- else -%}
+          <img src="{{ 'logo.png' | asset_url }}" width="34" height="34" alt="{{ shop.name | escape }}" loading="lazy" decoding="async">
+        {%- endif -%}
+        <span class="brand-name">{{ shop.name }}</span>
+      </div>
+      <p>{{ section.settings.footer_blurb | default: 'Body-safe adult toys, vibrators, couples toys and intimate wellness essentials. Plain packaging, discreet billing, no branding on the outer box.' }}</p>
+    </div>
+
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'menu' -%}
+        <div {{ block.shopify_attributes }}>
+          <h2 class="footer-heading">{{ block.settings.heading | default: 'Shop' }}</h2>
+          <ul>
+            {%- for link in linklists[block.settings.menu].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.seo_footer_text != blank -%}
+    <div class="footer-seo">
+      <p>{{ section.settings.seo_footer_text }}</p>
+    </div>
+  {%- endif -%}
+
+  <div class="copyright">
+    &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. Adult products intended for customers aged 18 and over.
+    &nbsp;·&nbsp;<a href="{{ routes.root_url }}policies/privacy-policy">Privacy</a>
+    &nbsp;·&nbsp;<a href="{{ routes.root_url }}policies/terms-of-service">Terms</a>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "textarea", "id": "footer_blurb", "label": "Footer description",
+      "default": "Body-safe adult toys, vibrators, couples toys and intimate wellness essentials. Plain packaging, discreet billing, no branding on the outer box." },
+    { "type": "textarea", "id": "seo_footer_text", "label": "Footer SEO paragraph",
+      "info": "One short, readable paragraph. Keep it a real sentence — stuffed keyword lists are treated as spam.",
+      "default": "Velvet Secret is an online adult toy store selling vibrators, wand massagers, clitoral and G-spot stimulators, dildos, anal toys, male masturbators, cock rings, couples toys, bondage accessories and water-based lubricants. Every order ships in plain discreet packaging with discreet billing." }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu" }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "menu", "settings": { "heading": "Shop" } },
+      { "type": "menu", "settings": { "heading": "Help" } },
+      { "type": "menu", "settings": { "heading": "About" } }
+    ]
+  }
+}
+{% endschema %}

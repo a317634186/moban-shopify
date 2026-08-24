@@ -1,0 +1,35 @@
+<section class="feature-strip" aria-label="Store promises">
+  {%- for block in section.blocks -%}
+    <div {{ block.shopify_attributes }}>
+      <strong>{{ block.settings.title }}</strong>
+      <span>{{ block.settings.text }}</span>
+    </div>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Trust bar",
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust bar",
+      "blocks": [
+        { "type": "item", "settings": { "title": "Body-safe materials", "text": "Medical-grade silicone and ABS only" } },
+        { "type": "item", "settings": { "title": "Discreet packaging", "text": "Plain outer box, neutral billing" } },
+        { "type": "item", "settings": { "title": "Expert buying guides", "text": "Honest advice, no pressure" } },
+        { "type": "item", "settings": { "title": "Fast tracked delivery", "text": "Dispatched same working day" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

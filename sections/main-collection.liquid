@@ -1,0 +1,50 @@
+{% render 'breadcrumbs' %}
+
+<div class="section collection-page">
+  <header class="collection-head">
+    <h1>{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <div class="collection-description rte">{{ collection.description }}</div>
+    {%- else -%}
+      <p class="collection-description">
+        Shop {{ collection.title | downcase }} at {{ shop.name }} — body-safe materials,
+        honest product detail and plain discreet packaging on every order.
+      </p>
+    {%- endif -%}
+    <p class="collection-count">{{ collection.products_count }} product{% if collection.products_count != 1 %}s{% endif %}</p>
+  </header>
+
+  {%- if collection.products.size > 0 -%}
+    {%- paginate collection.products by 24 -%}
+      <div class="products">
+        {%- for product in collection.products -%}
+          {%- if forloop.first and paginate.current_page == 1 -%}
+            {%- render 'product-card', card_product: product, lazy: false -%}
+          {%- else -%}
+            {%- render 'product-card', card_product: product, lazy: true -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" aria-label="Pagination">
+          {{ paginate | default_pagination }}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- else -%}
+    <p class="empty-note">
+      No products in this collection yet.
+      <a href="{{ routes.all_products_collection_url }}">Browse all adult toys</a>.
+    </p>
+  {%- endif -%}
+</div>
+
+{% render 'keyword-index' %}
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": []
+}
+{% endschema %}

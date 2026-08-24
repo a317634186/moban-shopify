@@ -1,0 +1,57 @@
+{%- comment -%}
+  Product card.
+  Accepts: card_product (product), lazy (boolean, default true)
+
+  SEO notes: descriptive per-product alt text, explicit width/height to keep CLS
+  at zero, responsive srcset so mobile does not download desktop pixels, and an
+  <h3> that links with the product name as anchor text.
+{%- endcomment -%}
+{%- assign p = card_product -%}
+{%- if lazy == nil -%}{%- assign lazy = true -%}{%- endif -%}
+{%- assign image = p.featured_image -%}
+
+<article class="card">
+  {%- if p.compare_at_price > p.price -%}
+    {%- assign saving = p.compare_at_price | minus: p.price | times: 100 | divided_by: p.compare_at_price -%}
+    <span class="badge">Save {{ saving }}%</span>
+  {%- endif -%}
+
+  <a class="card-media" href="{{ p.url }}" aria-label="{{ p.title | escape }}">
+    {%- if image -%}
+      <img
+        src="{{ image | image_url: width: 600 }}"
+        srcset="{{ image | image_url: width: 300 }} 300w, {{ image | image_url: width: 600 }} 600w, {{ image | image_url: width: 900 }} 900w"
+        sizes="(max-width: 560px) 45vw, (max-width: 900px) 45vw, 380px"
+        width="{{ image.width }}"
+        height="{{ image.height }}"
+        alt="{{ p.title | escape }}{% if p.type != blank %} – {{ p.type | escape }}{% endif %} at {{ shop.name | escape }}"
+        loading="{% if lazy %}lazy{% else %}eager{% endif %}"
+        {% unless lazy %}fetchpriority="high"{% endunless %}
+        decoding="async">
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </a>
+
+  <h3><a href="{{ p.url }}">{{ p.title }}</a></h3>
+
+  <div class="price">
+    {{ p.price | money }}
+    {%- if p.compare_at_price > p.price -%}
+      <del>{{ p.compare_at_price | money }}</del>
+    {%- endif -%}
+  </div>
+
+  {%- if p.available -%}
+    <form method="post" action="{{ routes.cart_add_url }}" class="card-form">
+      <input type="hidden" name="id" value="{{ p.selected_or_first_available_variant.id }}">
+      <input type="hidden" name="quantity" value="1">
+      <button class="quick-add" type="submit" data-add-to-cart>
+        <span aria-hidden="true">Add to cart</span>
+        <span class="visually-hidden">Add {{ p.title | escape }} to cart</span>
+      </button>
+    </form>
+  {%- else -%}
+    <a class="quick-add sold-out" href="{{ p.url }}">Sold out – view details</a>
+  {%- endif -%}
+</article>

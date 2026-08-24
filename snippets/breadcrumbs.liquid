@@ -1,0 +1,33 @@
+{%- comment -%}
+  Visible breadcrumb trail. Pairs with the BreadcrumbList JSON-LD in seo-schema.liquid
+  so crawlers see the same hierarchy that shoppers do.
+{%- endcomment -%}
+{%- assign tname = template.name | default: 'index' -%}
+{%- unless tname == 'index' -%}
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{{ routes.root_url }}">Home</a></li>
+    {%- case tname -%}
+      {%- when 'product' -%}
+        {%- if collection.title != blank -%}
+          <li><a href="{{ collection.url }}">{{ collection.title }}</a></li>
+        {%- else -%}
+          <li><a href="{{ routes.all_products_collection_url }}">Adult toys</a></li>
+        {%- endif -%}
+        <li aria-current="page">{{ product.title }}</li>
+      {%- when 'collection' -%}
+        <li><a href="{{ routes.collections_url }}">Shop</a></li>
+        <li aria-current="page">{{ collection.title }}</li>
+      {%- when 'article' -%}
+        <li><a href="{{ blog.url }}">{{ blog.title }}</a></li>
+        <li aria-current="page">{{ article.title }}</li>
+      {%- when 'blog' -%}
+        <li aria-current="page">{{ blog.title }}</li>
+      {%- when 'page' -%}
+        <li aria-current="page">{{ page.title }}</li>
+      {%- else -%}
+        <li aria-current="page">{{ page_title }}</li>
+    {%- endcase -%}
+  </ol>
+</nav>
+{%- endunless -%}

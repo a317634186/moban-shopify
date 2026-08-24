@@ -1,0 +1,30 @@
+<section class="newsletter" aria-labelledby="NewsletterHeading">
+  <h2 id="NewsletterHeading">{{ section.settings.heading | default: 'Private access to new arrivals' }}</h2>
+  <p>{{ section.settings.subheading | default: 'Buying guides, restock alerts and subscriber-only offers. Unsubscribe any time.' }}</p>
+
+  {%- form 'customer', class: 'signup' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <label class="visually-hidden" for="NewsletterEmail">Email address</label>
+    <input id="NewsletterEmail" type="email" name="contact[email]" required autocomplete="email" placeholder="Your email address">
+    <button class="btn light" type="submit">Subscribe</button>
+    {%- if form.posted_successfully? -%}
+      <p class="form-success" role="status">Thanks — please confirm via the email we just sent.</p>
+    {%- endif -%}
+    {%- if form.errors -%}
+      <p class="form-error" role="alert">{{ form.errors | default_errors }}</p>
+    {%- endif -%}
+  {%- endform -%}
+
+  <p class="age-note">You must be 18 or over to shop with us.</p>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "H2 heading", "default": "Private access to new arrivals" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Buying guides, restock alerts and subscriber-only offers. Unsubscribe any time." }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

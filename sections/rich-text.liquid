@@ -1,0 +1,57 @@
+{%- comment -%}
+  Editorial copy blocks. This is where genuine topical depth lives — Google reads
+  body copy, not the keywords meta tag. Each panel gets its own H2.
+{%- endcomment -%}
+
+<section class="section split" aria-label="About our range">
+  {%- for block in section.blocks -%}
+    <div class="split-panel" {{ block.shopify_attributes }}>
+      <h2>{{ block.settings.heading }}</h2>
+      <div class="split-body">{{ block.settings.text }}</div>
+      {%- if block.settings.button_label != blank -%}
+        <a class="btn" href="{{ block.settings.button_url | default: routes.all_products_collection_url }}">{{ block.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Rich text",
+  "blocks": [
+    {
+      "type": "panel",
+      "name": "Panel",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "H2 heading" },
+        { "type": "richtext", "id": "text", "label": "Body copy" },
+        { "type": "text", "id": "button_label", "label": "Button label" },
+        { "type": "url", "id": "button_url", "label": "Button link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich text",
+      "blocks": [
+        {
+          "type": "panel",
+          "settings": {
+            "heading": "A full range of adult toys for every body",
+            "text": "<p>Our range covers external and internal stimulation: bullet and rabbit vibrators, broad wand massagers, clitoral suction toys, G-spot and prostate massagers, dildos, anal toys and butt plugs, male masturbators and cock rings. Filter by material, power source and noise level to find something that suits how you actually like to play.</p>",
+            "button_label": "Browse all adult toys"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "heading": "Buying guides written by people who test the toys",
+            "text": "<p>Not sure where to start? Our guides explain the difference between rumbly and buzzy motors, which lubricant works with which material, how to clean silicone properly, and how couples can introduce a remote-control toy without any awkwardness.</p>",
+            "button_label": "Read the buying guides"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

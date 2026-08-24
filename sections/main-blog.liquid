@@ -1,0 +1,44 @@
+{% render 'breadcrumbs' %}
+
+<div class="section">
+  <header class="collection-head">
+    <h1>{{ blog.title }}</h1>
+    <p class="collection-description">
+      Buying guides, material explainers and intimacy advice from {{ shop.name }}.
+    </p>
+  </header>
+
+  {%- paginate blog.articles by 12 -%}
+    <div class="articles">
+      {%- for article in blog.articles -%}
+        <article class="article">
+          {%- if article.image -%}
+            <a href="{{ article.url }}" class="article-media">
+              <img src="{{ article.image | image_url: width: 600 }}"
+                   srcset="{{ article.image | image_url: width: 400 }} 400w, {{ article.image | image_url: width: 800 }} 800w"
+                   sizes="(max-width: 900px) 100vw, 380px"
+                   width="{{ article.image.width }}" height="{{ article.image.height }}"
+                   alt="{{ article.title | escape }}"
+                   loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" decoding="async">
+            </a>
+          {%- endif -%}
+          <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
+          <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%-d %B %Y' }}</time>
+          <p>{{ article.excerpt_or_content | strip_html | truncatewords: 26 }}</p>
+          <a href="{{ article.url }}">Read: {{ article.title }}</a>
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <nav class="pagination" aria-label="Pagination">{{ paginate | default_pagination }}</nav>
+    {%- endif -%}
+  {%- endpaginate -%}
+</div>
+
+{% schema %}
+{
+  "name": "Blog",
+  "settings": []
+}
+{% endschema %}
