@@ -4,6 +4,8 @@
     "settings": [
       {"type":"image_picker","id":"logo","label":"Logo"},
       {"type":"text","id":"announcement","label":"Announcement bar","default":"DISCREET SHIPPING · FREE UK DELIVERY OVER £45"},
+      {"type":"textarea","id":"seo_description","label":"SEO meta description","default":"Shop adult toys, sex toys and intimate wellness at Velvet Secret. Discover vibrators, massage wands, couples toys, lubricants and discreet delivery."},
+      {"type":"text","id":"seo_keywords","label":"SEO keyword index","default":"adult toys, sex toys, intimate wellness, vibrators, massage wands, couples toys, lubricants, discreet shipping, 成人用品, 情趣用品, 成人玩具, 情趣玩具, 情侣用品"},
       {"type":"color","id":"ink_color","label":"Ink color","default":"#1c1b1b"},
       {"type":"color","id":"accent_color","label":"Accent color","default":"#f94c43"}
     ]
