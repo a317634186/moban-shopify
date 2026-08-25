@@ -1,22 +1,23 @@
 {%- comment -%}
-  seo-schema.liquid  (v3.1.1)
-
-  If you ever see "Could not find asset snippets/seo-schema.liquid", this file
-  did not make it into the theme — Shopify's GitHub sync occasionally drops an
-  individual path. Fix by forcing a re-sync (any commit touching this file), or
-  create it manually in Edit code → Snippets → Add a new snippet → seo-schema.
+  seo-schema.liquid
 
   JSON-LD structured data. Organization + WebSite on every page, plus
   BreadcrumbList, Product, ItemList or BlogPosting depending on the template.
   FAQPage is emitted by sections/faq.liquid so the markup always matches
   content that is visible on the page (a Google requirement).
+
+  DO NOT move the org_id / site_id assigns below back into a {% liquid %} block.
+  Inside {% liquid %}, "#" begins a line comment. A "#" inside a quoted string
+  can be treated as the start of that comment, truncating the line to
+  `... | append: '/` — an unterminated string, which is a parse error. Shopify
+  then refuses to save the file and every page reports
+  "Could not find asset snippets/seo-schema.liquid".
+  In an ordinary {% assign %} tag "#" has no special meaning, so it is safe.
 {%- endcomment -%}
 
-{%- liquid
-  assign tname = template.name | default: 'index'
-  assign org_id = shop.url | append: '/#organization'
-  assign site_id = shop.url | append: '/#website'
--%}
+{%- assign tname = template.name | default: 'index' -%}
+{%- assign org_id = shop.url | append: '/#organization' -%}
+{%- assign site_id = shop.url | append: '/#website' -%}
 
 <script type="application/ld+json">
 {

@@ -115,7 +115,7 @@
   endif
 
   # An empty collection is a thin page. Indexing dozens of them drags down the
-  # whole store's quality signals, so keep them crawlable but out of the index
+  # quality signals for the whole store, so keep them crawlable but out of the
   # until they have stock.
   if tname == 'collection' and collection.products_count == 0
     assign robots_value = 'noindex, follow'
