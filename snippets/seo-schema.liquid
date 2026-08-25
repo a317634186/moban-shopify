@@ -6,13 +6,13 @@
   FAQPage is emitted by sections/faq.liquid so the markup always matches
   content that is visible on the page (a Google requirement).
 
-  DO NOT move the org_id / site_id assigns below back into a {% liquid %} block.
-  Inside {% liquid %}, "#" begins a line comment. A "#" inside a quoted string
-  can be treated as the start of that comment, truncating the line to
-  `... | append: '/` — an unterminated string, which is a parse error. Shopify
-  then refuses to save the file and every page reports
+  DO NOT move the org_id / site_id assigns below into a multi-line liquid tag
+  block. Inside one, a hash character begins a line comment. A hash inside a
+  quoted string can be read as the start of that comment, truncating the line
+  mid-string. An unterminated string is a parse error, Shopify then refuses to
+  save the file, and every page reports
   "Could not find asset snippets/seo-schema.liquid".
-  In an ordinary {% assign %} tag "#" has no special meaning, so it is safe.
+  In an ordinary one-line assign tag the hash has no special meaning.
 {%- endcomment -%}
 
 {%- assign tname = template.name | default: 'index' -%}
