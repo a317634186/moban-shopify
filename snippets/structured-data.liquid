@@ -1,23 +1,33 @@
 {%- comment -%}
-  seo-schema.liquid
+  structured-data.liquid
 
-  JSON-LD structured data. Organization + WebSite on every page, plus
-  BreadcrumbList, Product, ItemList or BlogPosting depending on the template.
-  FAQPage is emitted by sections/faq.liquid so the markup always matches
-  content that is visible on the page (a Google requirement).
+  JSON-LD. Organization + WebSite on every page, plus BreadcrumbList, Product,
+  ItemList or BlogPosting depending on the template. FAQPage is emitted by
+  sections/faq.liquid so the markup always matches content visible on the page.
 
-  DO NOT move the org_id / site_id assigns below into a multi-line liquid tag
-  block. Inside one, a hash character begins a line comment. A hash inside a
-  quoted string can be read as the start of that comment, truncating the line
-  mid-string. An unterminated string is a parse error, Shopify then refuses to
-  save the file, and every page reports
-  "Could not find asset snippets/seo-schema.liquid".
-  In an ordinary one-line assign tag the hash has no special meaning.
+  This file was previously named seo-schema.liquid. Shopify's GitHub sync
+  refused to create that path across four different revisions while syncing
+  every other file in the same commits, so the snippet was renamed to get a
+  clean path.
+
+  Two constructs are deliberately built from variables rather than written as
+  literals, so no string in this file contains a brace or a hash:
+    - hash      : avoids a hash inside a quoted string, which is read as the
+                  start of a line comment inside a multi-line liquid tag
+    - lbrace/rbrace : avoids brace characters inside a quoted string, which can
+                  confuse a tokeniser scanning for the end of an output tag
+  Neither is strictly required in a one-line assign tag, but the cost is zero
+  and this file has a history of not surviving the sync.
 {%- endcomment -%}
 
+{%- assign hash = '#' -%}
+{%- assign lbrace = '{' -%}
+{%- assign rbrace = '}' -%}
+
 {%- assign tname = template.name | default: 'index' -%}
-{%- assign org_id = shop.url | append: '/#organization' -%}
-{%- assign site_id = shop.url | append: '/#website' -%}
+{%- assign org_id = shop.url | append: '/' | append: hash | append: 'organization' -%}
+{%- assign site_id = shop.url | append: '/' | append: hash | append: 'website' -%}
+{%- assign search_target = shop.url | append: routes.search_url | append: '?q=' | append: lbrace | append: 'search_term_string' | append: rbrace -%}
 
 <script type="application/ld+json">
 {
@@ -48,28 +58,22 @@
       "url": {{ shop.url | json }},
       "name": {{ shop.name | json }},
       "inLanguage": {{ request.locale.iso_code | json }},
-      {%- comment -%}
-        Declares the site as adult, matching the rating/RTA meta tags. Honest
-        classification keeps the store out of family-filtered surfaces instead
-        of being demoted for misrepresenting itself.
-      {%- endcomment -%}
       "isFamilyFriendly": false,
       "publisher": { "@id": {{ org_id | json }} },
       "potentialAction": {
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": {{ shop.url | append: routes.search_url | append: '?q={search_term_string}' | json }}
+          "urlTemplate": {{ search_target | json }}
         },
         "query-input": "required name=search_term_string"
       }
     }
 
-    {%- comment -%} ---------------------------------------- BREADCRUMBS {%- endcomment -%}
     {%- unless tname == 'index' -%}
     ,{
       "@type": "BreadcrumbList",
-      "@id": {{ canonical_url | append: '#breadcrumb' | json }},
+      "@id": {{ canonical_url | append: hash | append: 'breadcrumb' | json }},
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -102,12 +106,11 @@
     }
     {%- endunless -%}
 
-    {%- comment -%} ------------------------------------------- PRODUCT {%- endcomment -%}
     {%- if tname == 'product' -%}
     {%- assign variant = product.selected_or_first_available_variant -%}
     ,{
       "@type": "Product",
-      "@id": {{ shop.url | append: product.url | append: '#product' | json }},
+      "@id": {{ shop.url | append: product.url | append: hash | append: 'product' | json }},
       "name": {{ product.title | json }},
       "url": {{ shop.url | append: product.url | json }},
       "description": {{ product.description | strip_html | truncatewords: 60 | json }},
@@ -121,12 +124,6 @@
         {%- endfor -%}
       ],
       "isFamilyFriendly": false,
-      {%- comment -%}
-        Review stars. Emitted ONLY when a review app has written real data to the
-        standard metafields, and the same numbers are rendered visibly by
-        snippets/rating.liquid — Google requires the rating to be on the page,
-        and fabricated ratings get rich results revoked domain-wide.
-      {%- endcomment -%}
       {%- assign review_count = product.metafields.reviews.rating_count.value -%}
       {%- assign review_rating = product.metafields.reviews.rating.value -%}
       {%- if review_count > 0 and review_rating.rating != blank -%}
@@ -164,11 +161,10 @@
     }
     {%- endif -%}
 
-    {%- comment -%} ---------------------------- COLLECTION AS ITEMLIST {%- endcomment -%}
     {%- if tname == 'collection' and collection.products.size > 0 -%}
     ,{
       "@type": "ItemList",
-      "@id": {{ canonical_url | append: '#itemlist' | json }},
+      "@id": {{ canonical_url | append: hash | append: 'itemlist' | json }},
       "name": {{ collection.title | json }},
       "numberOfItems": {{ collection.products_count }},
       "itemListElement": [
@@ -184,11 +180,10 @@
     }
     {%- endif -%}
 
-    {%- comment -%} --------------------------------------- BLOGPOSTING {%- endcomment -%}
     {%- if tname == 'article' -%}
     ,{
       "@type": "BlogPosting",
-      "@id": {{ shop.url | append: article.url | append: '#article' | json }},
+      "@id": {{ shop.url | append: article.url | append: hash | append: 'article' | json }},
       "headline": {{ article.title | json }},
       "url": {{ shop.url | append: article.url | json }},
       "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%z' | json }},
